@@ -18,7 +18,6 @@ const start = async (client = new Client()) => {
     const { from, body } = message;
     const commands = body;
     const command = commands.toLowerCase().split(" ")[0] || "";
-    console.log(command);
     const args = commands.split(" ");
 
     const isUrl = new RegExp(
@@ -27,11 +26,8 @@ const start = async (client = new Client()) => {
 
     switch (command) {
       case "/test":
-        await client.sendText(
-          message.from,
-          " Hello " + message.notifyName + "!"
-        );
-
+        await client.sendText(from, " Hello " + message.notifyName + "!");
+        break;
       case "/link":
         let url = args[1];
         if (url.match(isUrl)) {
@@ -42,9 +38,11 @@ const start = async (client = new Client()) => {
             await client.sendText(from, "Failed to save!");
           }
         }
+        break;
+
       case "/getLinks":
         const response = await getLinks();
-        if (response) {
+        if (!response.link) {
           const links = "";
           response.forEach((data) => {
             links = `- ${data.link}\n`;
@@ -53,6 +51,10 @@ const start = async (client = new Client()) => {
         } else {
           await client.sendText(from, "Failed to get links!");
         }
+        break;
+      default:
+        await client.sendText(from, "Command tidak tersedia!");
+        break;
     }
   });
 };
